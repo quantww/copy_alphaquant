@@ -54,6 +54,9 @@ ERR_INTERNAL = 5
 ERR_NETWORK = 6
 ERR_SIGNATURE= 7
 ERR_NOT_LOGIN = 10
+ERR_ORDER_NOT_EXIST = 11
+ERR_EXCEED_MAX_DAY_ORDER_NUM = 12
+ERR_LOGIN_FAILED = 13
 
 def _create_client():
 
@@ -154,6 +157,18 @@ def GetAccountBalance(liveTradeID):
     try:
         return _create_client().GetAccountBalance(_g_session_str, liveTradeID)
 
+    except:
+        print("except: ", sys.exc_info())
+
+        ret.ret_code = ERR_EXCEPTION
+
+        return ret
+
+def GetAccountInfo(liveTradeID, key):
+    ret = Map({})
+
+    try:
+        return _create_client().GetAccountInfo(_g_session_str, liveTradeID, key)
     except:
         print("except: ", sys.exc_info())
 

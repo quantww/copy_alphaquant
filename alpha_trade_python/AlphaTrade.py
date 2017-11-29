@@ -89,6 +89,15 @@ class Iface(object):
         """
         pass
 
+    def GetAccountInfo(self, sessionID, liveTradeID, key):
+        """
+        Parameters:
+         - sessionID
+         - liveTradeID
+         - key
+        """
+        pass
+
     def CancelOrder(self, sessionID, liveTradeID, orderID):
         """
         Parameters:
@@ -485,6 +494,41 @@ class Client(Iface):
             return result.success
         raise TApplicationException(TApplicationException.MISSING_RESULT, "GetOrderState failed: unknown result")
 
+    def GetAccountInfo(self, sessionID, liveTradeID, key):
+        """
+        Parameters:
+         - sessionID
+         - liveTradeID
+         - key
+        """
+        self.send_GetAccountInfo(sessionID, liveTradeID, key)
+        return self.recv_GetAccountInfo()
+
+    def send_GetAccountInfo(self, sessionID, liveTradeID, key):
+        self._oprot.writeMessageBegin('GetAccountInfo', TMessageType.CALL, self._seqid)
+        args = GetAccountInfo_args()
+        args.sessionID = sessionID
+        args.liveTradeID = liveTradeID
+        args.key = key
+        args.write(self._oprot)
+        self._oprot.writeMessageEnd()
+        self._oprot.trans.flush()
+
+    def recv_GetAccountInfo(self):
+        iprot = self._iprot
+        (fname, mtype, rseqid) = iprot.readMessageBegin()
+        if mtype == TMessageType.EXCEPTION:
+            x = TApplicationException()
+            x.read(iprot)
+            iprot.readMessageEnd()
+            raise x
+        result = GetAccountInfo_result()
+        result.read(iprot)
+        iprot.readMessageEnd()
+        if result.success is not None:
+            return result.success
+        raise TApplicationException(TApplicationException.MISSING_RESULT, "GetAccountInfo failed: unknown result")
+
     def CancelOrder(self, sessionID, liveTradeID, orderID):
         """
         Parameters:
@@ -738,6 +782,7 @@ class Processor(Iface, TProcessor):
         self._processMap["GetHoldingStock"] = Processor.process_GetHoldingStock
         self._processMap["GetAllOrder"] = Processor.process_GetAllOrder
         self._processMap["GetOrderState"] = Processor.process_GetOrderState
+        self._processMap["GetAccountInfo"] = Processor.process_GetAccountInfo
         self._processMap["CancelOrder"] = Processor.process_CancelOrder
         self._processMap["CloseOrder"] = Processor.process_CloseOrder
         self._processMap["LiveTradeBuyOpen"] = Processor.process_LiveTradeBuyOpen
@@ -946,6 +991,25 @@ class Processor(Iface, TProcessor):
             logging.exception(ex)
             result = TApplicationException(TApplicationException.INTERNAL_ERROR, 'Internal error')
         oprot.writeMessageBegin("GetOrderState", msg_type, seqid)
+        result.write(oprot)
+        oprot.writeMessageEnd()
+        oprot.trans.flush()
+
+    def process_GetAccountInfo(self, seqid, iprot, oprot):
+        args = GetAccountInfo_args()
+        args.read(iprot)
+        iprot.readMessageEnd()
+        result = GetAccountInfo_result()
+        try:
+            result.success = self._handler.GetAccountInfo(args.sessionID, args.liveTradeID, args.key)
+            msg_type = TMessageType.REPLY
+        except (TTransport.TTransportException, KeyboardInterrupt, SystemExit):
+            raise
+        except Exception as ex:
+            msg_type = TMessageType.EXCEPTION
+            logging.exception(ex)
+            result = TApplicationException(TApplicationException.INTERNAL_ERROR, 'Internal error')
+        oprot.writeMessageBegin("GetAccountInfo", msg_type, seqid)
         result.write(oprot)
         oprot.writeMessageEnd()
         oprot.trans.flush()
@@ -2321,6 +2385,150 @@ class GetOrderState_result(object):
             oprot.trans.write(oprot._fast_encode(self, (self.__class__, self.thrift_spec)))
             return
         oprot.writeStructBegin('GetOrderState_result')
+        if self.success is not None:
+            oprot.writeFieldBegin('success', TType.STRUCT, 0)
+            self.success.write(oprot)
+            oprot.writeFieldEnd()
+        oprot.writeFieldStop()
+        oprot.writeStructEnd()
+
+    def validate(self):
+        return
+
+    def __repr__(self):
+        L = ['%s=%r' % (key, value)
+             for key, value in self.__dict__.items()]
+        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+    def __ne__(self, other):
+        return not (self == other)
+
+
+class GetAccountInfo_args(object):
+    """
+    Attributes:
+     - sessionID
+     - liveTradeID
+     - key
+    """
+
+    thrift_spec = (
+        None,  # 0
+        (1, TType.STRING, 'sessionID', 'UTF8', None, ),  # 1
+        (2, TType.STRING, 'liveTradeID', 'UTF8', None, ),  # 2
+        (3, TType.STRING, 'key', 'UTF8', None, ),  # 3
+    )
+
+    def __init__(self, sessionID=None, liveTradeID=None, key=None,):
+        self.sessionID = sessionID
+        self.liveTradeID = liveTradeID
+        self.key = key
+
+    def read(self, iprot):
+        if iprot._fast_decode is not None and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None:
+            iprot._fast_decode(self, iprot, (self.__class__, self.thrift_spec))
+            return
+        iprot.readStructBegin()
+        while True:
+            (fname, ftype, fid) = iprot.readFieldBegin()
+            if ftype == TType.STOP:
+                break
+            if fid == 1:
+                if ftype == TType.STRING:
+                    self.sessionID = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 2:
+                if ftype == TType.STRING:
+                    self.liveTradeID = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                else:
+                    iprot.skip(ftype)
+            elif fid == 3:
+                if ftype == TType.STRING:
+                    self.key = iprot.readString().decode('utf-8') if sys.version_info[0] == 2 else iprot.readString()
+                else:
+                    iprot.skip(ftype)
+            else:
+                iprot.skip(ftype)
+            iprot.readFieldEnd()
+        iprot.readStructEnd()
+
+    def write(self, oprot):
+        if oprot._fast_encode is not None and self.thrift_spec is not None:
+            oprot.trans.write(oprot._fast_encode(self, (self.__class__, self.thrift_spec)))
+            return
+        oprot.writeStructBegin('GetAccountInfo_args')
+        if self.sessionID is not None:
+            oprot.writeFieldBegin('sessionID', TType.STRING, 1)
+            oprot.writeString(self.sessionID.encode('utf-8') if sys.version_info[0] == 2 else self.sessionID)
+            oprot.writeFieldEnd()
+        if self.liveTradeID is not None:
+            oprot.writeFieldBegin('liveTradeID', TType.STRING, 2)
+            oprot.writeString(self.liveTradeID.encode('utf-8') if sys.version_info[0] == 2 else self.liveTradeID)
+            oprot.writeFieldEnd()
+        if self.key is not None:
+            oprot.writeFieldBegin('key', TType.STRING, 3)
+            oprot.writeString(self.key.encode('utf-8') if sys.version_info[0] == 2 else self.key)
+            oprot.writeFieldEnd()
+        oprot.writeFieldStop()
+        oprot.writeStructEnd()
+
+    def validate(self):
+        return
+
+    def __repr__(self):
+        L = ['%s=%r' % (key, value)
+             for key, value in self.__dict__.items()]
+        return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+    def __eq__(self, other):
+        return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+    def __ne__(self, other):
+        return not (self == other)
+
+
+class GetAccountInfo_result(object):
+    """
+    Attributes:
+     - success
+    """
+
+    thrift_spec = (
+        (0, TType.STRUCT, 'success', (GetAccountInfoResp, GetAccountInfoResp.thrift_spec), None, ),  # 0
+    )
+
+    def __init__(self, success=None,):
+        self.success = success
+
+    def read(self, iprot):
+        if iprot._fast_decode is not None and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None:
+            iprot._fast_decode(self, iprot, (self.__class__, self.thrift_spec))
+            return
+        iprot.readStructBegin()
+        while True:
+            (fname, ftype, fid) = iprot.readFieldBegin()
+            if ftype == TType.STOP:
+                break
+            if fid == 0:
+                if ftype == TType.STRUCT:
+                    self.success = GetAccountInfoResp()
+                    self.success.read(iprot)
+                else:
+                    iprot.skip(ftype)
+            else:
+                iprot.skip(ftype)
+            iprot.readFieldEnd()
+        iprot.readStructEnd()
+
+    def write(self, oprot):
+        if oprot._fast_encode is not None and self.thrift_spec is not None:
+            oprot.trans.write(oprot._fast_encode(self, (self.__class__, self.thrift_spec)))
+            return
+        oprot.writeStructBegin('GetAccountInfo_result')
         if self.success is not None:
             oprot.writeFieldBegin('success', TType.STRUCT, 0)
             self.success.write(oprot)
