@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\AlphaConfig.cpp" />
+    <ClCompile Include="..\AlphaTrade.cpp" />
+    <ClCompile Include="..\AlphaTrade_server.cpp" />
+    <ClCompile Include="..\alpha_config_constants.cpp" />
+    <ClCompile Include="..\alpha_config_types.cpp" />
+    <ClCompile Include="..\alpha_trade_constants.cpp" />
+    <ClCompile Include="..\alpha_trade_types.cpp" />
+    <ClCompile Include="..\GBase64.cpp" />
+    <ClCompile Include="..\GWin32CriticalSection.cpp" />
+    <ClCompile Include="..\GWin32Thread.cpp" />
+    <ClCompile Include="..\hexin_stock_broker_huatai.cpp" />
+    <ClCompile Include="..\hexin_stock_broker_guangfa.cpp" />
+    <ClCompile Include="..\hexin_weituo.cpp" />
+    <ClCompile Include="..\lib.cpp" />
+    <ClCompile Include="..\license_manager.cpp" />
+    <ClCompile Include="..\main.cpp" />
+    <ClCompile Include="..\md5.cpp" />
+    <ClCompile Include="..\PracticalSocket.cpp" />
+    <ClCompile Include="..\signature.cpp" />
+    <ClCompile Include="..\thread_broker_adapter.cpp" />
+    <ClCompile Include="..\utility.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\AlphaConfig.h" />
+    <ClInclude Include="..\AlphaTrade.h" />
+    <ClInclude Include="..\alpha_trade_types.h" />
+    <ClInclude Include="..\defs.h" />
+    <ClInclude Include="..\GBase64.h" />
+    <ClInclude Include="..\GScopedLock.h" />
+    <ClInclude Include="..\GSyncObject.h" />
+    <ClInclude Include="..\GWin32CriticalSection.h" />
+    <ClInclude Include="..\GWin32Event.h" />
+    <ClInclude Include="..\GWin32Thread.h" />
+    <ClInclude Include="..\hexin_stock_broker_huatai.h" />
+    <ClInclude Include="..\hexin_stock_broker_guangfa.h" />
+    <ClInclude Include="..\lib.h" />
+    <ClInclude Include="..\license_manager.h" />
+    <ClInclude Include="..\md5.h" />
+    <ClInclude Include="..\PracticalSocket.h" />
+    <ClInclude Include="..\signature.h" />
+    <ClInclude Include="..\stock_broker.h" />
+    <ClInclude Include="..\thread_broker_adapter.h" />
+    <ClInclude Include="..\utility.h" />
+    <ClInclude Include="..\alpha_config_constants.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\alpha_config_types.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\alpha_trade_constants.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{9a553bf3-c4a0-4828-bcd2-55d28d2b9980}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{51b81e81-dfb9-4157-85a4-ca905abaa77f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
